@@ -56,14 +56,14 @@ const App = () => {
       <h1>Pokedex</h1>
       <SearchBar onSearch={handleSearch} />
       <PokemonList pokemons={searchedPokemon || pokemonData.results} />
-      {!searchedPokemon && (
-        <Pagination
-          onPageChange={handlePageChange}
-          page={page}
-          totalCount={pokemonData.count}
-          limit={20}
-        />
-      )}
+      {/* {searchedPokemon && ( */}
+      <Pagination
+        onPageChange={handlePageChange}
+        page={page}
+        totalCount={pokemonData.count}
+        limit={20}
+      />
+      {/* )} */}
     </div>
   );
 };
