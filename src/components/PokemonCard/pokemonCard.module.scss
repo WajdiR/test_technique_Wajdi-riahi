@@ -1,0 +1,38 @@
+.card {
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    margin: 10px;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  
+    img {
+      width: 100%;
+      display: block;
+    }
+  
+    h3 {
+      color: #333;
+      margin: 10px 0;
+    }
+  
+    p {
+      color: #666;
+      margin-bottom: 10px;
+    }
+  
+    .types {
+      padding-bottom: 10px;
+  
+      span {
+        display: inline-block;
+        background-color: #def;
+        margin: 5px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        color: #333;
+      }
+    }
+  }
+  
