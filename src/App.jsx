@@ -3,28 +3,45 @@ import PokemonList from "./components/PokemonList/PokemonList";
 import SearchBar from "./components/SearchBar/SearchBar";
 import { fetchPokemons, fetchPokemonDetails } from "./utils"; // Make sure fetchPokemonDetails is also exported from utils
 import styles from "./App.module.scss";
+import FilterBar from "./components/FilterBar/FilterBar";
 
 const App = () => {
   const [page, setPage] = useState(0);
   const [pokemonData, setPokemonData] = useState({ results: [], count: 0 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState(""); // Add this line to define filter state
   const limit = 20; // Define the number of items per page
+  const [filteredPokemons, setFilteredPokemons] = useState([]);
 
+  const loadPokemons = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchPokemons(limit, limit * page);
+      setPokemonData(data);
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  };
   useEffect(() => {
-    const loadPokemons = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchPokemons(limit, limit * page);
-        setPokemonData(data);
-      } catch (err) {
-        setError(err.message);
-      }
-      setLoading(false);
-    };
-
     loadPokemons();
   }, [page, limit]);
+
+  useEffect(() => {
+    if (filter) {
+      const filtered = pokemonData.results.filter(
+        (pokemon) =>
+          pokemon.types.some((type) => type.type.name.includes(filter)) ||
+          pokemon.abilities.some((ability) =>
+            ability.ability.name.includes(filter)
+          )
+      );
+      setFilteredPokemons(filtered);
+    } else {
+      setFilteredPokemons(pokemonData.results);
+    }
+  }, [filter, pokemonData.results]);
 
   const totalPages = Math.ceil(pokemonData.count / limit); // Calculate total pages
 
@@ -55,6 +72,9 @@ const App = () => {
 
   const isSinglePokemonSearch = searchedPokemon && searchedPokemon.length === 1;
 
+  // Check if the filter is applied and there are no results
+  const showNoResultsMessage = filter && filteredPokemons.length === 0;
+
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>Pokedex</h1>
@@ -76,8 +96,15 @@ const App = () => {
         </div>
 
         <SearchBar onSearch={handleSearch} />
+
+        <FilterBar onFilterChange={setFilter} />
+        {showNoResultsMessage && (
+          <p className={styles.noResultsMessage}>
+            No results found for <span>{filter}</span> filter.
+          </p>
+        )}
         <PokemonList
-          pokemons={searchedPokemon || pokemonData.results}
+          pokemons={searchedPokemon || filteredPokemons}
           isSingle={isSinglePokemonSearch} // Pass a prop to indicate a single search result
         />
         {/* {searchedPokemon && ( */}

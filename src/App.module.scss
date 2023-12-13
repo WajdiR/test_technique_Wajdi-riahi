@@ -15,6 +15,15 @@ body {
     // add some padding
     padding: 20px;
   }
+  .noResultsMessage {
+    text-align: center;
+    color: red;
+    margin: 1rem 0;
+    .span {
+      font-weight: 900;
+    }
+    // Add any other styles as needed
+  }
   .navigation {
     display: flex;
     justify-content: space-between;

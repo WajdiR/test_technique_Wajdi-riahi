@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
-import styles from './searchBar.module.scss';
+import React, { useState, useEffect } from "react";
+import styles from "./searchBar.module.scss";
 
-const SearchBar = ({ onSearch }) => {
-  const [input, setInput] = useState('');
+const SearchBar = ({ onSearch, searchTerm }) => {
+  const [input, setInput] = useState(searchTerm);
+
+  useEffect(() => {
+    setInput(searchTerm);
+  }, [searchTerm]);
 
   const handleSearch = (e) => {
     e.preventDefault();
