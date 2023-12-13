@@ -1,0 +1,29 @@
+.filterForm {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+  // remove space between the input and button
+
+  input {
+    width: 150px;
+    padding: 10px;
+    border: 0.25px solid #ddd;
+    font-size: 12px;
+    &:hover {
+      // background-color: dark grey;
+      background-color: white;
+      color: black;
+    }
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: #f3f3f3;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+  }
+}

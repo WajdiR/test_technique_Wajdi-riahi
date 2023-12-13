@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import styles from "./FilterBar.module.scss"; // Import the styles
 
-const FilterBar = ({ onFilterChange }) => {
+const FilterBar = ({ onFilterChange, onRemoveFilter }) => {
   const [input, setInput] = useState("");
 
   const handleSubmit = (e) => {

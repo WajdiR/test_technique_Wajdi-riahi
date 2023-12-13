@@ -75,6 +75,10 @@ const App = () => {
   // Check if the filter is applied and there are no results
   const showNoResultsMessage = filter && filteredPokemons.length === 0;
 
+  const removeFilter = () => {
+    setFilter("");
+  };
+
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>Pokedex</h1>
@@ -97,10 +101,23 @@ const App = () => {
 
         <SearchBar onSearch={handleSearch} />
 
-        <FilterBar onFilterChange={setFilter} />
+        <div className={styles.filterContainer}>
+          <FilterBar onFilterChange={setFilter} />
+          {filter && (
+            <div className={styles.currentFilter}>
+              <span> {filter}</span>
+              <button
+                onClick={removeFilter}
+                className={styles.removeFilterButton}
+              >
+                X
+              </button>
+            </div>
+          )}
+        </div>
         {showNoResultsMessage && (
           <p className={styles.noResultsMessage}>
-            No results found for <span>{filter}</span> filter.
+            No results found ! 
           </p>
         )}
         <PokemonList
