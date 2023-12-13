@@ -3,19 +3,14 @@ import React from "react";
 import PokemonCard from "../PokemonCard/PokemonCard";
 import styles from "./pokemonList.module.scss";
 
-const PokemonList = ({ pokemons }) => {
-  if (!pokemons) {
-    return <p>Loading...</p>; // Or some other loading indicator
-  }
+const PokemonList = ({ pokemons, isSingle }) => {
+  const listStyles = isSingle ? styles.singleList : styles.list;
 
-  if (pokemons.length === 0) {
-    return <p>No Pokémon found.</p>;
-  }
-
+  // Ensure pokemons is an array before trying to map over it
   return (
-    <div className={styles.list}>
-      {pokemons.map((pokemon) => (
-        <PokemonCard key={pokemon.id} pokemon={pokemon} />
+    <div className={(styles.list, listStyles)}>
+      {pokemons?.map((pokemon) => (
+        <PokemonCard key={pokemon.id} pokemon={pokemon} isSingle={isSingle} />
       ))}
     </div>
   );

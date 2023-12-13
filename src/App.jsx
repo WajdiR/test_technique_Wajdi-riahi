@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PokemonList from "./components/PokemonList/PokemonList";
 import SearchBar from "./components/SearchBar/SearchBar";
-import Pagination from "./components/Pagination/Pagination";
 import { fetchPokemons, fetchPokemonDetails } from "./utils"; // Make sure fetchPokemonDetails is also exported from utils
 import styles from "./App.module.scss";
 
@@ -10,12 +9,13 @@ const App = () => {
   const [pokemonData, setPokemonData] = useState({ results: [], count: 0 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const limit = 20; // Define the number of items per page
 
   useEffect(() => {
     const loadPokemons = async () => {
       setLoading(true);
       try {
-        const data = await fetchPokemons(20, 20 * page);
+        const data = await fetchPokemons(limit, limit * page);
         setPokemonData(data);
       } catch (err) {
         setError(err.message);
@@ -24,7 +24,9 @@ const App = () => {
     };
 
     loadPokemons();
-  }, [page]);
+  }, [page, limit]);
+
+  const totalPages = Math.ceil(pokemonData.count / limit); // Calculate total pages
 
   const [searchedPokemon, setSearchedPokemon] = useState(null);
 
@@ -51,19 +53,37 @@ const App = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
+  const isSinglePokemonSearch = searchedPokemon && searchedPokemon.length === 1;
+
   return (
     <div className={styles.app}>
-      <h1>Pokedex</h1>
-      <SearchBar onSearch={handleSearch} />
-      <PokemonList pokemons={searchedPokemon || pokemonData.results} />
-      {/* {searchedPokemon && ( */}
-      <Pagination
-        onPageChange={handlePageChange}
-        page={page}
-        totalCount={pokemonData.count}
-        limit={20}
-      />
-      {/* )} */}
+      <h1 className={styles.title}>Pokedex</h1>
+      <div className={styles.container}>
+        <div className={styles.navigation}>
+          <button
+            onClick={() => handlePageChange(page - 1)}
+            disabled={page === 0}
+          >
+            PREVIOUS
+          </button>
+          <span>Page: {page}</span>
+          <button
+            onClick={() => handlePageChange(page + 1)}
+            disabled={page >= totalPages - 1}
+          >
+            NEXT
+          </button>
+        </div>
+
+        <SearchBar onSearch={handleSearch} />
+        <PokemonList
+          pokemons={searchedPokemon || pokemonData.results}
+          isSingle={isSinglePokemonSearch} // Pass a prop to indicate a single search result
+        />
+        {/* {searchedPokemon && ( */}
+
+        {/* )} */}
+      </div>
     </div>
   );
 };
