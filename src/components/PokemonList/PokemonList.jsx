@@ -1,10 +1,15 @@
+// PokemonList.jsx
 import React from "react";
 import PokemonCard from "../PokemonCard/PokemonCard";
 import styles from "./pokemonList.module.scss";
 
 const PokemonList = ({ pokemons }) => {
-  if (!Array.isArray(pokemons)) {
-    return <p>No Pokémon found or there was an error.</p>;
+  if (!pokemons) {
+    return <p>Loading...</p>; // Or some other loading indicator
+  }
+
+  if (pokemons.length === 0) {
+    return <p>No Pokémon found.</p>;
   }
 
   return (
