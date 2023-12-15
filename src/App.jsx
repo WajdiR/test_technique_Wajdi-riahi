@@ -3,9 +3,11 @@ import PokemonList from "./components/PokemonList/PokemonList";
 import SearchBar from "./components/SearchBar/SearchBar";
 import { fetchPokemons, fetchPokemonDetails } from "./utils"; // Make sure fetchPokemonDetails is also exported from utils
 import styles from "./App.module.scss";
+import { useNavigate } from "react-router-dom";
 import FilterBar from "./components/FilterBar/FilterBar";
 
 const App = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [pokemonData, setPokemonData] = useState({ results: [], count: 0 });
   const [loading, setLoading] = useState(false);
@@ -13,6 +15,22 @@ const App = () => {
   const [filter, setFilter] = useState(""); // Add this line to define filter state
   const limit = 20; // Define the number of items per page
   const [filteredPokemons, setFilteredPokemons] = useState([]);
+
+  const updateUrl = (page, search = "", filter = "") => {
+    let newPath = `/page/${page}`;
+    if (search) {
+      newPath += `?search=${search}`;
+    }
+    if (filter) {
+      if (search) {
+        newPath += `&`;
+      } else {
+        newPath += `?`;
+      }
+      newPath += `filter=${filter}`;
+    }
+    navigate(newPath);
+  };
 
   const loadPokemons = async () => {
     setLoading(true);
@@ -49,7 +67,7 @@ const App = () => {
 
   const handleSearch = async (query) => {
     setLoading(true);
-    setError(null); // Clear previous errors
+    setError(null);
     try {
       const data = await fetchPokemonDetails(query.toLowerCase());
       setSearchedPokemon([data]); // Wrap the result in an array to match the PokemonList component's expectation
@@ -59,12 +77,18 @@ const App = () => {
       setSearchedPokemon(null); // Clear previous search results
     }
     setLoading(false);
+    updateUrl(0, query); // reset to page 0 on new search
+  };
+  const handleFilterChange = (newFilter) => {
+    setFilter(newFilter);
+    updateUrl(page, searchedPokemon, newFilter);
   };
 
   const handlePageChange = (newPage) => {
     setSearchedPokemon(null); // Clear search when changing pages
     setError(null); // Also clear errors
     setPage(newPage);
+    updateUrl(newPage, searchedPokemon, filter);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -116,9 +140,7 @@ const App = () => {
           )}
         </div>
         {showNoResultsMessage && (
-          <p className={styles.noResultsMessage}>
-            No results found ! 
-          </p>
+          <p className={styles.noResultsMessage}>No results found !</p>
         )}
         <PokemonList
           pokemons={searchedPokemon || filteredPokemons}
