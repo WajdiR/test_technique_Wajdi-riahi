@@ -1,25 +1,18 @@
 .list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); // Creates four columns of equal width
-  grid-gap: 1rem; // Increase this value to add more space between the cards
-  padding: 1rem; // Adds some padding around the entire grid for better spacing from the container edges
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1rem;
+  padding: 1rem;
 
-  // If you have a specific max-width for the cards, consider this setup
   @media (min-width: 1200px) {
-    grid-template-columns: repeat(
-      4,
-      minmax(0, 250px)
-    ); // Adjust minmax min value as needed
-    justify-content: center; // This will center the grid in the container if the cards don't take up all available space
+    grid-template-columns: repeat(4, minmax(0, 250px));
+    justify-content: center;
   }
 }
 
-// New styles to center a single card
 .singleList {
-  // display all the height of the page
   height: 70vh;
 
-  // center the card
   display: flex;
   justify-content: center;
   align-items: flex-start;

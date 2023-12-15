@@ -1,7 +1,5 @@
-// components/FilterBar/FilterBar.jsx
-
 import React, { useState } from "react";
-import styles from "./FilterBar.module.scss"; // Import the styles
+import styles from "./FilterBar.module.scss";
 
 const FilterBar = ({ onFilterChange, onRemoveFilter }) => {
   const [input, setInput] = useState("");
@@ -9,6 +7,7 @@ const FilterBar = ({ onFilterChange, onRemoveFilter }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onFilterChange(input);
+    setInput("");
   };
 
   return (
@@ -18,7 +17,7 @@ const FilterBar = ({ onFilterChange, onRemoveFilter }) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Filter by type or ability"
-        className={styles.filterInput} // Use the style class
+        className={styles.filterInput}
       />
       <button type="submit" className={styles.filterButton}>
         Filter

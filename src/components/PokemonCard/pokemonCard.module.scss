@@ -1,12 +1,10 @@
-// pokemonCard.module.scss
-
 .card {
   background-color: rgba(16, 75, 163, 0.603);
-  height: 250px; // Adjust the height as needed
-  width: 250px; // Adjust the width as needed
-  border-radius: 10px; // Rounded corners for aesthetic
-  margin: 1px; // Adds space around each card
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Optional: adds a subtle shadow effect
+  height: 250px;
+  width: 250px;
+  border-radius: 10px;
+  margin: 1px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 
   display: flex;
@@ -15,43 +13,44 @@
   justify-content: center;
   overflow: hidden;
   text-align: center;
+  cursor: pointer;
 
   .stats {
-    margin-top: 10px; // Space above the stats section
-    text-align: center; // Align text to the left
-    width: 100%; // Ensure the stats div uses the full width of the card
+    margin-top: 10px;
+    text-align: center;
+    width: 100%;
 
     p {
-      margin: 5px 0; // Space between stats lines
-      padding: 0 10px; // Padding inside the stats section
+      margin: 5px 0;
+      padding: 0 10px;
     }
   }
 
   img {
-    max-height: 120px; // Adjust based on your design to control the image size
-    width: auto; // Keeps the image aspect ratio
-    margin-bottom: 10px; // Space between the image and the text below
+    max-height: 120px;
+    width: auto;
+    margin-bottom: 10px;
   }
 
   h3 {
-    color: black; // Color of the text, adjusted for better contrast against the blue background
+    color: black;
     margin: 5px 0;
   }
 
   p {
-    color: black; // Same as above
+    color: black;
     margin: 5px 0;
   }
 
   .types {
     display: flex;
     justify-content: center;
-    gap: 5px; // Adds space between type badges
+    gap: 5px;
 
     span {
-      background-color: white; //
+      background-color: white;
       color: black;
-      font-weight: 700; // Dark text for readability
+      font-weight: 700;
       font-size: large;
       padding: 5px 10px;
       border-radius: 5px;

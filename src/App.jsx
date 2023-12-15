@@ -1,33 +1,35 @@
 import React, { useState, useEffect } from "react";
 import PokemonList from "./components/PokemonList/PokemonList";
 import SearchBar from "./components/SearchBar/SearchBar";
-import { fetchPokemons, fetchPokemonDetails } from "./utils"; // Make sure fetchPokemonDetails is also exported from utils
+import FilterBar from "./components/FilterBar/FilterBar";
+import { fetchPokemons, fetchPokemonDetails } from "./utils";
 import styles from "./App.module.scss";
 import { useNavigate } from "react-router-dom";
-import FilterBar from "./components/FilterBar/FilterBar";
 
 const App = () => {
-  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [pokemonData, setPokemonData] = useState({ results: [], count: 0 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState(""); // Add this line to define filter state
-  const limit = 20; // Define the number of items per page
-  const [filteredPokemons, setFilteredPokemons] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [searchedPokemon, setSearchedPokemon] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(""); // State to hold the search term
+  const limit = 20;
 
-  const updateUrl = (page, search = "", filter = "") => {
-    let newPath = `/page/${page}`;
-    if (search) {
-      newPath += `?search=${search}`;
-    }
-    if (filter) {
-      newPath += search ? `&` : `?`;
-      newPath += `filter=${filter}`;
-    }
-    navigate(newPath);
+  useEffect(() => {
+    loadPokemons();
+  }, [page, limit]);
+
+  useEffect(() => {
+    setFilteredPokemons();
+  }, [filter, pokemonData.results]);
+
+  const handleTitleClick = () => {
+    setPage(0);
+    setFilter("");
+    setSearchTerm("");
+    loadPokemons();
   };
-
   const loadPokemons = async () => {
     setLoading(true);
     try {
@@ -35,74 +37,77 @@ const App = () => {
       setPokemonData(data);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
-  useEffect(() => {
-    loadPokemons();
-  }, [page, limit]);
 
-  useEffect(() => {
-    if (filter) {
-      const filtered = pokemonData.results.filter(
-        (pokemon) =>
-          pokemon.types.some((type) => type.type.name.includes(filter)) ||
-          pokemon.abilities.some((ability) =>
-            ability.ability.name.includes(filter)
-          )
-      );
-      setFilteredPokemons(filtered);
-    } else {
-      setFilteredPokemons(pokemonData.results);
-    }
-  }, [filter, pokemonData.results]);
-
-  const totalPages = Math.ceil(pokemonData.count / limit); // Calculate total pages
-
-  const [searchedPokemon, setSearchedPokemon] = useState(null);
+  const setFilteredPokemons = () => {
+    const filtered = filter
+      ? pokemonData.results.filter(
+          (pokemon) =>
+            pokemon.types.some((type) => type.type.name.includes(filter)) ||
+            pokemon.abilities.some((ability) =>
+              ability.ability.name.includes(filter)
+            )
+        )
+      : pokemonData.results;
+    setSearchedPokemon(filtered);
+  };
 
   const handleSearch = async (query) => {
     setLoading(true);
     setError(null);
-    try {
-      const data = await fetchPokemonDetails(query.toLowerCase());
-      setSearchedPokemon([data]); // Wrap the result in an array to match the PokemonList component's expectation
-      setPage(0); // Optionally reset the pagination
-    } catch (error) {
-      setError(`Pokemon not found: "${query}"`); // Provide feedback if no Pokemon is found
-      setSearchedPokemon(null); // Clear previous search results
+
+    const trimmedQuery = query.trim(); // Trim the query to remove whitespace
+
+    // Check if the query is empty after trimming
+    if (!trimmedQuery) {
+      setError("No results found!");
+      setSearchedPokemon([]);
+      setLoading(false);
+      return;
     }
-    setLoading(false);
-    updateUrl(0, query); // reset to page 0 on new search
+
+    try {
+      const data = await fetchPokemonDetails(trimmedQuery.toLowerCase());
+      if (data) {
+        setSearchedPokemon([data]);
+      } else {
+        setError("No results found!"); // Handle no results
+        setSearchedPokemon([]);
+      }
+    } catch (error) {
+      setError(`Error occurred: ${error.message}`);
+      setSearchedPokemon([]);
+    } finally {
+      setLoading(false);
+    }
   };
+
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
-    updateUrl(page, searchedPokemon, newFilter);
+    setSearchTerm(""); // Clear the search term when filter changes
   };
 
   const handlePageChange = (newPage) => {
-    setSearchedPokemon(null); // Clear search when changing pages
-    setError(null); // Also clear errors
     setPage(newPage);
-    updateUrl(newPage, searchedPokemon, filter);
+    setSearchTerm(""); // Clear the search term when page changes
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
-
-  const isSinglePokemonSearch = searchedPokemon && searchedPokemon.length === 1;
-
-  // Check if the filter is applied and there are no results
-  const showNoResultsMessage = filter && filteredPokemons.length === 0;
 
   const removeFilter = () => {
     setFilter("");
-    // Update URL to remove the filter parameter but keep the current page
-    updateUrl(page, searchedPokemon);
+    setSearchTerm(""); // Clear the search term when filter is removed
   };
+
+  const totalPages = Math.ceil(pokemonData.count / limit);
+  const showNoResultsMessage = searchedPokemon.length === 0;
+
   return (
     <div className={styles.app}>
-      <h1 className={styles.title}>Pokedex</h1>
+      <h1 className={styles.title} onClick={handleTitleClick}>
+        Pokedex
+      </h1>
       <div className={styles.container}>
         <div className={styles.navigation}>
           <button
@@ -111,7 +116,9 @@ const App = () => {
           >
             PREVIOUS
           </button>
-          <span>Page: {page}</span>
+          <span>
+            Page: {page + 1} of {totalPages}
+          </span>
           <button
             onClick={() => handlePageChange(page + 1)}
             disabled={page >= totalPages - 1}
@@ -119,33 +126,34 @@ const App = () => {
             NEXT
           </button>
         </div>
-
-        <SearchBar onSearch={handleSearch} />
-
-        <div className={styles.filterContainer}>
-          <FilterBar onFilterChange={setFilter} />
-          {filter && (
-            <div className={styles.currentFilter}>
-              <span> {filter}</span>
-              <button
-                onClick={removeFilter}
-                className={styles.removeFilterButton}
-              >
-                X
-              </button>
-            </div>
-          )}
-        </div>
-        {showNoResultsMessage && (
-          <p className={styles.noResultsMessage}>No results found !</p>
-        )}
-        <PokemonList
-          pokemons={searchedPokemon || filteredPokemons}
-          isSingle={isSinglePokemonSearch} // Pass a prop to indicate a single search result
+        <SearchBar
+          onSearch={handleSearch}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
-        {/* {searchedPokemon && ( */}
-
-        {/* )} */}
+        <FilterBar onFilterChange={handleFilterChange} />
+        {filter && (
+          <div className={styles.currentFilter}>
+            <span> {filter}</span>
+            <button
+              onClick={removeFilter}
+              className={styles.removeFilterButton}
+            >
+              X
+            </button>
+          </div>
+        )}
+        {showNoResultsMessage && (
+          <p className={styles.noResultsMessage}>No results found!</p>
+        )}
+        {!showNoResultsMessage && (
+          <>
+            <PokemonList
+              pokemons={searchedPokemon}
+              isSingle={searchedPokemon.length === 1}
+            />
+          </>
+        )}
       </div>
     </div>
   );

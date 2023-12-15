@@ -2,17 +2,11 @@ body {
   background-color: azure;
 }
 .app {
-  // background-color in the body
-  // ... your existing styles
   .container {
-    // border radius with shadow effect
     border-radius: 10px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
-    // center the container
     margin: 0px auto;
-    // set the width
     max-width: 1200px;
-    // add some padding
     padding: 20px;
   }
   .filterContainer {
@@ -25,9 +19,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    margin-left: 24%;
-    // Center the filter text and button
-    flex-grow: 1; // Allow the div to take up available space
+    margin-left: 50%;
+    margin-bottom: 1%;
+    flex-grow: 1;
 
     span {
       margin: 0 5px;
@@ -58,8 +52,6 @@ body {
     font-weight: 900;
     font-size: 1.2rem;
     margin: 1rem 40%;
-
-    // Add any other styles as needed
   }
   .navigation {
     display: flex;
@@ -68,23 +60,21 @@ body {
     padding: 10px 20px;
     margin-bottom: 10px;
 
-    // This selector targets the button on the left ("Previous")
     button:first-of-type {
       background-color: black;
       color: white;
       padding: 10px;
       margin-left: 0;
-      margin-right: auto; // Pushes everything else to the right
+      margin-right: auto;
       cursor: pointer;
     }
 
-    // This selector targets the button on the right ("Next")
     button:last-of-type {
       background-color: black;
       color: white;
       padding: 10px;
       margin-right: 0;
-      margin-left: auto; // Pushes everything else to the left
+      margin-left: auto;
       cursor: pointer;
     }
   }
@@ -93,9 +83,6 @@ body {
     text-align: center;
     font-weight: 900;
     font-family: Arial, Helvetica, sans-serif;
-
-    // Other styles for your title
+    cursor: pointer;
   }
-
-  // ... rest of your styles
 }

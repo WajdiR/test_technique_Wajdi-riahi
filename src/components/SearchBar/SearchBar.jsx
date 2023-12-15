@@ -1,24 +1,23 @@
-import React, { useState, useEffect } from "react";
+
+import React from "react";
 import styles from "./searchBar.module.scss";
 
-const SearchBar = ({ onSearch, searchTerm }) => {
-  const [input, setInput] = useState(searchTerm);
-
-  useEffect(() => {
-    setInput(searchTerm);
-  }, [searchTerm]);
+const SearchBar = ({ onSearch, searchTerm, setSearchTerm }) => {
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(input);
+    onSearch(searchTerm);
   };
 
   return (
     <form className={styles.searchBar} onSubmit={handleSearch}>
       <input
         type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={searchTerm}
+        onChange={handleInputChange}
         placeholder="Enter pokemon name or index"
       />
       <button type="submit">SEARCH</button>

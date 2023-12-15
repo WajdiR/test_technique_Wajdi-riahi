@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   margin-bottom: 5px;
-  // remove space between the input and button
 
   input {
     width: 300px;
@@ -10,7 +9,6 @@
     border: 0.25px solid #ddd;
     font-size: 12px;
     &:hover {
-      // background-color: dark grey;
       background-color: white;
       color: black;
     }

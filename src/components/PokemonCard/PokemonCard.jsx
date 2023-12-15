@@ -8,7 +8,6 @@ const PokemonCard = ({ pokemon, isSingle }) => {
     setShowDetails(!showDetails);
   };
 
-  // Use the official artwork for the image if available
   const imageUrl =
     pokemon?.sprites?.other?.["official-artwork"]?.front_default ||
     pokemon?.sprites?.front_default;
