@@ -22,11 +22,7 @@ const App = () => {
       newPath += `?search=${search}`;
     }
     if (filter) {
-      if (search) {
-        newPath += `&`;
-      } else {
-        newPath += `?`;
-      }
+      newPath += search ? `&` : `?`;
       newPath += `filter=${filter}`;
     }
     navigate(newPath);
@@ -101,8 +97,9 @@ const App = () => {
 
   const removeFilter = () => {
     setFilter("");
+    // Update URL to remove the filter parameter but keep the current page
+    updateUrl(page, searchedPokemon);
   };
-
   return (
     <div className={styles.app}>
       <h1 className={styles.title}>Pokedex</h1>
